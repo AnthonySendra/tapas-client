@@ -16,13 +16,6 @@ vnet
 ```
 vnet
     .need('user[0].name')
-    .need('user[0].age')
-    .fetch()
-```
-
-```
-vnet
-    .need('user[0].name')
     .need('user[0].friends')
     .fetch()
 ```
@@ -68,6 +61,15 @@ model.need('users')
 
 vnet.fetch()
 model.fetch()
+```
+
+```
+let name$ = vnet.need('user[0].name')
+name$
+    .filter((name) => name.length > 2)
+    .forEach((name) => console.log(name))
+
+vnet.fetch()
 ```
 
 ```
