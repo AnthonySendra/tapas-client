@@ -1,14 +1,16 @@
-# VNet
+# Tapas
+
+## Read
 
 ```
-vnet
+tapas
     .need('users.name')
     .fetch()
     .then((res) => console.log(res.users))
 ```
 
 ```
-vnet
+tapas
     .need('users.name')
     .need('users.age')
     .fetch()
@@ -16,7 +18,14 @@ vnet
 ```
 
 ```
-vnet
+tapas
+    .need('users.name', 'users.age')
+    .fetch()
+    .then((res) => console.log(res.users))
+```
+
+```
+tapas
     .need('user[0].name')
     .need('user[0].friends')
     .fetch()
@@ -24,7 +33,7 @@ vnet
 ```
 
 ```
-vnet
+tapas
     .need('users.name')
     .need('users.age')
     .need('users.friends.name')
@@ -34,20 +43,52 @@ vnet
 ```
 
 ```
-vnet
+tapas
     .need('users.name')
     .need('users.age')
 
-vnet
+tapas
     .need('cats')
 
-vnet
+tapas
     .fetch()
     .then((res) => console.log(res.users, res.cats))
 ```
 
 ```
-let users = vnet
+tapas
+    .need('users.name')
+    .with({<where, order, size, from, anything to pass to the server>})
+    .fetch()
+    .then((res) => console.log(res.users))
+```
+
+```
+tapas
+    .need('users.name')
+    .with('<param>', '<value>')
+    .fetch()
+    .then((res) => console.log(res.users))
+```
+
+```
+let users = tapas
+    .need('users.name')
+    .with({<where, order, size, from, anything to pass to the server>})
+
+users
+    .fetch()
+    .then((res) => {
+        console.log('first page', res.users)
+        return users.with('from', 10)
+    })
+    .then((res) => {
+        console.log('second page', res.users)
+    })
+```
+
+```
+let users = tapas
     .need('users')
 
 users.need('name', 'age')
@@ -56,18 +97,18 @@ users.with({<where, order, anything to pass to the server>})
 let friends = users.need('friends')
 friends.need('name')
 
-vnet
+tapas
     .fetch()
     .then((res) => console.log(res.users, res.cats))
 ```
 
 ```
-let model = vnet.isolate()
+let model = tapas.isolate()
 
-vnet.need('cats')
+tapas.need('cats')
 model.need('users')
 
-vnet
+tapas
     .fetch()
     .then((res) => console.log(res.cats))
 
@@ -77,19 +118,19 @@ model
 ```
 
 ```
-let name$ = vnet.need('user[0].name')
+let name$ = tapas.need('user[0].name')
 name$
     .filter((name) => name.length > 2)
     .forEach((name) => console.log(name))
 
-vnet.fetch()
+tapas.fetch()
 ```
 
 ```
-let users$ = vnet
+let users$ = tapas
     .need('users.age')
     .need('users.name')
-    .fetch()
+    .subscribe()
 
 users$
     .filter((user) => user.name.indexOf('a') === 0)
@@ -98,29 +139,21 @@ users$
 ```
 
 ```
-vnet
-    .need('users.name')
-    .with({<where, order, anything to pass to the server>})
-    .fetch()
-    .then((res) => console.log(res.users))
-```
-
-```
-vnet
+tapas
     .need({'users': ['name', 'age', {friends: ['name', 'age']}]})
     .fetch()
     .then((res) => console.log(res.users))
 ```
 
 ```
-vnet
+tapas
     .need('users.name')
     .fetch({useCache: false})
     .then((res) => console.log(res.users))
 ```
 
 ```
-vnet
+tapas
     .need({
         'users': {
             attributes: ['name', 'age', {
@@ -134,25 +167,25 @@ vnet
 ```
 
 ```
-vnet
+tapas
     .fetch('users.name', 'users.age')
     .then((res) => console.log(res.users))
 ```
 
 ```
-vnet
+tapas
     .fetch('user[0].name', 'user[0].age', {useCache: false})
     .then((res) => console.log(res.users))
 ```
 
 ```
-vnet
+tapas
     .fetch({'users': ['name', 'age', {friends: ['name', 'age']}]})
     .then((res) => console.log(res.users))
 ```
 
 ```
-vnet
+tapas
     .fetch({
         'users': {
             attributes: ['name', 'age', {
@@ -162,4 +195,38 @@ vnet
         }
     })
     .then((res) => console.log(res.users))
+```
+
+## Subscribe
+
+```
+tapas
+    .need('users.name')
+    .need('users.age')
+    .need('users.friends.name')
+    .need('users.friends.age')
+    .subscribe()
+    .forEach((res) => console.log(res.users))
+```
+
+## Write
+
+```
+tapas
+    .send('user')
+    .with({<attributes>})
+    .need('user.id')
+    .execute()
+    .then((res) => console.log(res.user.id))
+```
+
+```
+tapas
+    .send('user')
+    .with({<user attributs>})
+    .with('friends', {<friends attributes>})
+    .need('user.id')
+    .need('friends.id')
+    .execute()
+    .then((res) => console.log(res.user.id, res.friends))
 ```
