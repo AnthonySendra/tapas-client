@@ -1,0 +1,11 @@
+{
+  root: true,
+  parserOptions: {
+    sourceType: 'module'
+  },
+  extends: 'standard',
+  'rules': {
+    'arrow-parens': 0,
+    'no-trailing-spaces': 0
+  }
+}
