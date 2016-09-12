@@ -115,16 +115,17 @@ tapas
 ```
 
 ```
-let model = tapas.isolate()
+let tapasCats = new Tapas()
+let tapasUsers = new Tapas()
 
-tapas.need('cats')
-model.need('users')
+tapasCats.need('cats')
+tapasUsers.need('users')
 
-tapas
+tapasCats
   .fetch()
   .then((res) => console.log(res.cats))
 
-model
+tapasUsers
   .fetch()
   .then((res) => console.log(res.users))
 ```

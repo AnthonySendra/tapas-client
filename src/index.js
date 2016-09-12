@@ -15,18 +15,41 @@
 //     isolate ->
 // }
 
-import Scope from './Scope'
+import merge from 'deepmerge'
 
 function Tapas (config) {
   this.cache = {}
   this.requests = {}
+  this.needed = {}
+  this.lastEntryPoint = null
 }
 
 Tapas.prototype.need = function () {
-  let scope = new Scope()
-  let paths = Object.keys(arguments).map((value) => arguments[value])
+  Object.keys(arguments).forEach((index) => {
+    this.lastEntryPoint = arguments[index].split('.')[0]
+    this.needed = merge(this.needed, constructNeededWithPath(arguments[index]))
+  })
 
-  return scope.need.apply(scope, paths)
+  return this
+}
+
+function constructNeededWithPath (path) {
+  let pathArray = path.split('.')
+  let object = {}
+
+  pathArray.reduce((prev, curr, index) => {
+    if (pathArray.length - 1 === index) {
+      prev[curr] = {
+        cache: undefined
+      }
+    } else {
+      prev[curr] = {}
+    }
+
+    return prev[curr]
+  }, object)
+
+  return object
 }
 
 export default Tapas

@@ -2,10 +2,17 @@ import merge from 'deepmerge'
 
 function Scope () {
   this.needed = {}
+  this.entryPointName = null
+  this.with = null
 }
 
 Scope.prototype.need = function () {
   Object.keys(arguments).forEach((index) => {
+    let entryPoint = arguments[index].split('.')[0]
+    if (!this.entryPointName) {
+      this.entryPointName = entryPoint
+    }
+    
     this.needed = merge(this.needed, constructNeededWithPath(arguments[index]))
   })
 
